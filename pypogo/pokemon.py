@@ -503,6 +503,29 @@ class Pokemon(ub.NiceRepr):
             print('self = {!r}'.format(self))
             print('Pokemon CP must be less than this to be used in league')
 
+    def get_evolution_cps(self, max_cp=1500, max_level=51):
+        """
+        self = Pokemon('gastly', ivs=[6, 13, 15])
+        self.check_evolution_cps()
+        """
+        evos = list(self.family(ancestors=False))
+
+        if len(evos) == 0:
+            print('no evolutions available')
+
+        for evo in evos:
+            other = evo
+
+            other.level = self.level
+            other.populate_cp()
+
+            print(f'{other.display_name()} cp={other.cp}')
+
+            if other.cp <= max_cp:
+                print('True')  
+            else:
+                print('False')
+
     @property
     def stat_product(self):
         product = (self.adjusted['attack'] * self.adjusted['stamina'] * self.adjusted['defense'])
@@ -626,7 +649,7 @@ class Pokemon(ub.NiceRepr):
         #
         if verbose:
             print('')
-            print('Leage {} Rankings'.format(max_cp))
+            print('League {} Rankings'.format(max_cp))
             print('self = {!r}'.format(self))
             print(rankings.sort_values('rank'))
         return rankings
